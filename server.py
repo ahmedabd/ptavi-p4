@@ -12,7 +12,6 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
     Echo server class
     """
     dicc = {}
-    ultimadireccionSIP = ''
     def handle(self):
         # Escribe dirección y puerto del cliente (de tupla client_address)
         self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
@@ -27,14 +26,14 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
                 break
             if len(linea.split()) == 5:
                 if linea_lista[4] == '0':
-                    (registro, self.ultimadireccionSIP, mensaje, expires, tiempo) = linea_lista
-                    del self.dicc[self.ultimadireccionSIP]
+                    (registro, direccion, mensaje, expires, tiempo) = linea_lista
+                    del self.dicc[direccion]
                     print(self.dicc)
                 elif linea_lista[4] > '0':
                     ip = self.client_address[0]
                     #print(ip)
-                    (registro, self.ultimadireccionSIP, mensaje, expires, tiempo) = linea_lista
-                    self.dicc[self.ultimadireccionSIP] = ip
+                    (registro, direccion, mensaje, expires, tiempo) = linea_lista
+                    self.dicc[direccion] = ip
                     print(self.dicc)
 
             
