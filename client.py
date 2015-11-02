@@ -26,7 +26,7 @@ my_socket.connect((SERVER, PORT))
 
 
 if sys.argv[3] == 'register':
-    print("Enviando: " + REGISTER )
+    print("Enviando: " + REGISTER)
     print("Enviando: " + USER)
     my_socket.send((bytes(REGISTER + ' ' + 'sip:' + USER + ' ', 'utf-8') + b'SIP/2.0\r\n' + bytes('Expires:' + ' ' + str(EXPIRES), 'utf-8') + b'\r\n\r\n'))
     data = my_socket.recv(1024)
