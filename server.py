@@ -16,16 +16,12 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
 
     dicc = {}
     def handle(self):
-        # Escribe dirección y puerto del cliente (de tupla client_address)
-
         self.json2register()
         while 1:
-            # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read()
             linea = line.decode('utf-8')
             linea_lista = linea.split()            
             print("El cliente nos manda " + linea)
-            # Si no hay más líneas salimos del bucle infinito
             if not linea or  len(linea.split()) != 5 :
                 break
             if len(linea.split()) == 5:
@@ -36,7 +32,6 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
                     self.register2json()
                 elif linea_lista[4] > '0':
                     ip = self.client_address[0]
-                    #print(ip)
                     (registro, direccion, mensaje, expires, tiempo) = linea_lista
                     self.dicc[direccion] = [ip, time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(time.time() + int(tiempo)))]
                     print(self.dicc)
@@ -46,11 +41,15 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
 
 
     def register2json(self):
-        with open('registered.json', 'w') as filejson:
-            json.dump(self.dicc, filejson, indent=4, separators=(',', ':'))
+        with open('registered.json', 'w') as fichero_json:
+            json.dump(self.dicc, fichero_json, indent=4, separators=(',', ':'))
 
     def json2register(self):
-        pass
+        try:
+            with open('registered.json', 'w') as archivo_json:
+                self.dicc = json.loads(archivo_json)
+        except:
+            pass
 
 
 if __name__ == "__main__":
