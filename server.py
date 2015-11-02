@@ -9,20 +9,25 @@ import sys
 import json
 import time
 
+
 class SIPRegisterHandler(socketserver.DatagramRequestHandler):
     """
     Echo server class
     """
 
     dicc = {}
+
     def handle(self):
+        """
+        Mediante un bucle infinito va esperando registros de usuarios
+        """
         self.json2register()
         while 1:
             line = self.rfile.read()
             linea = line.decode('utf-8')
-            linea_lista = linea.split()            
+            linea_lista = linea.split()
             print("El cliente nos manda " + linea)
-            if not linea or  len(linea.split()) != 5 :
+            if not linea or len(linea.split()) != 5:
                 break
             if len(linea.split()) == 5:
                 if linea_lista[4] == '0':
@@ -38,13 +43,17 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
                     self.register2json()
                 self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
 
-
-
     def register2json(self):
+        """
+        Registra usuarios en un fichero json
+        """
         with open('registered.json', 'w') as fichero_json:
             json.dump(self.dicc, fichero_json, indent=4, separators=(',', ':'))
 
     def json2register(self):
+        """
+        Dependiendo de si exista o no el fichero el método ejecutará una cosa u otra
+        """
         try:
             with open('registered.json', 'w') as archivo_json:
                 self.dicc = json.loads(archivo_json)
